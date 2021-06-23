@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SolarCoffee.Data;
 
 namespace SolarCoffee.Web
 {
@@ -32,6 +34,15 @@ namespace SolarCoffee.Web
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SolarCoffee.Web", Version = "v1" });
             });
+            services.AddDbContext<SolarDbContext>(options =>
+            {
+                options.EnableDetailedErrors();
+                options.UseSqlServer(Configuration.GetConnectionString("solar.dev"));
+            });
+            //services.AddLogging();
+            
+            //TODO: 1. Change connection string
+            //TODO: 2. Add logging
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
