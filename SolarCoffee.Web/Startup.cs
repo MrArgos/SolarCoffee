@@ -35,10 +35,7 @@ namespace SolarCoffee.Web
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SolarCoffee.Web", Version = "v1" });
             });
             services.AddDbContext<SolarDbContext>(options =>
-            {
-                options.EnableDetailedErrors();
-                options.UseSqlServer(Configuration.GetConnectionString("solar.dev"));
-            });
+                options.UseSqlServer(Configuration.GetConnectionString("solar.dev")));
             //services.AddLogging();
             
             //TODO: 1. Change connection string
