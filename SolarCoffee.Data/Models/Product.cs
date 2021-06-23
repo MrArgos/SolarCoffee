@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SolarCoffee.Data.Models
 {
@@ -12,6 +13,7 @@ namespace SolarCoffee.Data.Models
         public string Name { get; set; }
         [MaxLength(256)]
         public string Description { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
         public bool IsTaxable { get; set; }
         public bool IsArchived { get; set; }
