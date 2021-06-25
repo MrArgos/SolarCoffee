@@ -7,7 +7,7 @@ namespace SolarCoffee.Services.Order
     {
         List<SalesOrder> GetOrders();
         ServiceResponse<SalesOrder> GetOrderById(int id);
-        ServiceResponse<bool> GenerateInvoiceForOrder(SalesOrder order);
+        ServiceResponse<bool> GenerateOpenOrder(SalesOrder order);
         ServiceResponse<bool> MakeFulfilled(int id);
     }
 }

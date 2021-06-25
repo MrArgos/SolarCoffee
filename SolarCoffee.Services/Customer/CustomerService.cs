@@ -7,7 +7,7 @@ using SolarCoffee.Data;
 
 namespace SolarCoffee.Services.Customer
 {
-    class CustomerService : ICustomerService
+    public class CustomerService : ICustomerService
     {
         private readonly ILogger<CustomerService> _logger;
         private readonly SolarDbContext _db;
