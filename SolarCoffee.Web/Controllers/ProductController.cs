@@ -33,7 +33,7 @@ namespace SolarCoffee.Web.Controllers
             _logger.LogInformation("Getting product with id: {Id}", id);
             var product = _productService.GetProductById(id);
             var productViewModel = ProductMapper.SerializeProductModel(product);
-            return Ok();
+            return Ok(productViewModel);
         }
 
         [HttpPatch("/api/product/{id:int}")]

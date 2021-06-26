@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SolarCoffee.Services.Customer;
 using SolarCoffee.Services.Order;
@@ -30,7 +31,25 @@ namespace SolarCoffee.Web.Controllers
             _logger.LogInformation("Generating Invoice");
             var order = OrderMapper.SerializeInvoiceToOrder(invoice);
             order.Customer = _customerService.GetCustomerById(invoice.CustomerId);
-            return Ok();
+            var response = _orderService.GenerateOpenOrder(order);
+            return Ok(response);
+        }
+
+        [HttpGet("/api/order")]
+        public ActionResult GetAllOrders()
+        {
+            _logger.LogInformation("Getting all orders");
+            var orders = _orderService.GetOrders();
+            var orderModels = OrderMapper.SerializeOrdersToViewModels(orders);
+            return Ok(orderModels);
+        }
+
+        [HttpPatch("/api/order/complete/{id:int}")]
+        public ActionResult MarkingOrderAsPaid(int id)
+        {
+            _logger.LogInformation("Marking order {Id} as paid",id);
+            var response = _orderService.MakeFulfilled(id);
+            return Ok(response);
         }
     }
 }

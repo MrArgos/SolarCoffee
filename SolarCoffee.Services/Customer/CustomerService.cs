@@ -78,18 +78,18 @@ namespace SolarCoffee.Services.Customer
                     {
                         Data = false,
                         IsSuccess = false,
-                        Message = "Failed inserting Customer in database",
+                        Message = "Failed deleting Customer",
                         Time = DateTime.UtcNow
                     };
                 }
 
-                _db.Remove(customer);
+                _db.Customers.Remove(customer);
                 _db.SaveChanges();
                 return new ServiceResponse<bool>
                 {
                     Data = true,
                     IsSuccess = true,
-                    Message = "Failed inserting Customer in database",
+                    Message = "Customer deleted successfully",
                     Time = DateTime.UtcNow
                 };
             }
@@ -101,7 +101,7 @@ namespace SolarCoffee.Services.Customer
                 {
                     Data = false,
                     IsSuccess = false,
-                    Message = "Failed inserting Customer in database",
+                    Message = "Failed deleting Customer",
                     Time = DateTime.UtcNow
                 };
             }
@@ -114,7 +114,9 @@ namespace SolarCoffee.Services.Customer
         /// <returns>Customer</returns>
         public Data.Models.Customer GetCustomerById(int id)
         {
-            return _db.Customers.Find(id);
+            return _db.Customers
+                .Include(x => x.PrimaryAddress)
+                .FirstOrDefault(x => x.Id == id);
         }
     }
 }
