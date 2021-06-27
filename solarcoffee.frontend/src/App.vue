@@ -15,15 +15,13 @@ import SideMenu from "@/components/SideMenu.vue";
 
 @Component({
   name: "App",
-  components: { SideMenu }
+  components: { SideMenu },
 })
-export default class App extends Vue {
-}
+export default class App extends Vue {}
 </script>
 
 <style lang="scss">
-
-@import "@/scss/global.scss";
+@import "src/scss/global.scss";
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

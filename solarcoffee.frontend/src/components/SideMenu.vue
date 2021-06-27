@@ -29,10 +29,9 @@ import SolarButton from "@/components/SolarButton.vue";
 
 @Component({
   name: "SideMenu",
-  components: { SolarButton }
+  components: { SolarButton },
 })
-export default class SideMenu extends Vue {
-}
+export default class SideMenu extends Vue {}
 </script>
 
 <style scoped lang="scss">

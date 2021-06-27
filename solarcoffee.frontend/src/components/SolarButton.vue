@@ -16,23 +16,23 @@ import { Prop } from "vue-property-decorator";
 
 @Component({
   name: "SolarButton",
-  components: {}
+  components: {},
 })
 export default class SolarButton extends Vue {
   @Prop({ required: false, type: String })
   link?: string;
 
   @Prop({ required: false, type: Boolean, default: false })
-  isFullWidth: boolean;
+  isFullWidth!: boolean;
 
-  visitRoute() {
-    this.$router.push(this.link);
+  visitRoute(): void {
+    this.$router.push({ path: this.link });
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "@/scss/global.scss";
+@import "src/scss/global.scss";
 
 .solar-button {
   background: lighten($solar-blue, 10%);
@@ -48,17 +48,17 @@ export default class SolarButton extends Vue {
   border-bottom: 2px solid darken($solar-blue, 20%);
   border-radius: 30px;
 
-  &:hover{
+  &:hover {
     background: lighten($solar-blue, 20%);
     transition: background-color 0.5s;
   }
 
-  &:disabled{
+  &:disabled {
     background: lighten($solar-blue, 15%);
     border-bottom: 2px solid lighten($solar-blue, 20%);
   }
 
-  &:active{
+  &:active {
     background-color: $solar-yellow;
     border-bottom: 2px solid lighten($solar-yellow, 20%);
   }

@@ -5,7 +5,7 @@ import store from "./store";
 
 Vue.config.productionTip = false;
 
-Vue.filter("price", function(num: number) {
+Vue.filter("price", function (num: number) {
   if (isNaN(num)) {
     return "-";
   }
@@ -15,5 +15,5 @@ Vue.filter("price", function(num: number) {
 new Vue({
   router,
   store,
-  render: (h) => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

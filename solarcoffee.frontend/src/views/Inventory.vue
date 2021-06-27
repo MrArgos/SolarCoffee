@@ -12,10 +12,9 @@
       </tr>
 
       <tr v-for="item in inventory" :key="item.id">
-
         <td>{{ item.product.name }}</td>
         <td>{{ item.quantityOnHand }}</td>
-        <td>{{ item.product.price | price}}</td>
+        <td>{{ item.product.price | price }}</td>
         <td>
           <span v-if="item.product.isTaxable">Yes</span>
           <span v-else>No</span>
@@ -34,7 +33,7 @@ import { IProductInventory } from "@/types/Product";
 
 @Component({
   name: "Inventory",
-  components: {}
+  components: {},
 })
 export default class Inventory extends Vue {
   inventory: IProductInventory[] = [
@@ -48,10 +47,10 @@ export default class Inventory extends Vue {
         createdOn: new Date(),
         updatedOn: new Date(),
         isTaxable: true,
-        isArchived: false
+        isArchived: false,
       },
       quantityOnHand: 150,
-      idealQuantity: 200
+      idealQuantity: 200,
     },
     {
       id: 2,
@@ -63,11 +62,11 @@ export default class Inventory extends Vue {
         createdOn: new Date(),
         updatedOn: new Date(),
         isTaxable: false,
-        isArchived: false
+        isArchived: false,
       },
       quantityOnHand: 130,
-      idealQuantity: 180
-    }
+      idealQuantity: 180,
+    },
   ];
 }
 </script>

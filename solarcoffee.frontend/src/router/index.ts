@@ -6,16 +6,15 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
-    name: 'home',
-    component: Inventory
+    path: "/",
+    name: "home",
+    component: Inventory,
   },
   {
-    path: '/inventory',
-    name: 'inventory',
-    component: Inventory
+    path: "/inventory",
+    name: "inventory",
+    component: Inventory,
   },
-
 ];
 
 const router = new VueRouter({
