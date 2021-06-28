@@ -32,7 +32,7 @@ import Component from "vue-class-component";
   components: {},
 })
 export default class SolarModal extends Vue {
-  close() {
+  close(): void {
     this.$emit("close");
   }
 }

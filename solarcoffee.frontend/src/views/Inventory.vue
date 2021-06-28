@@ -97,27 +97,27 @@ export default class Inventory extends Vue {
     },
   ];
 
-  closeModals() {
+  closeModals(): void {
     this.isShipmentVisible = false;
     this.isNewProductVisible = false;
   }
 
-  showNewProductModal() {
+  showNewProductModal(): void {
     this.isShipmentVisible = false;
     this.isNewProductVisible = true;
   }
 
-  showShipmentModal() {
+  showShipmentModal(): void {
     this.isNewProductVisible = false;
     this.isShipmentVisible = true;
   }
 
-  saveNewProduct(product: IProduct) {
+  saveNewProduct(product: IProduct): void {
     console.log("saveNewProduct");
     console.log(product);
   }
 
-  saveNewShipment(shipment: IShipment) {
+  saveNewShipment(shipment: IShipment): void {
     console.log("saveNewShipment");
     console.log(shipment);
   }
