@@ -24,7 +24,7 @@ namespace SolarCoffee.Web.Controllers
             _logger.LogInformation("Getting all inventory");
             var inventory = _inventoryService.GetCurrentInventory()
                 .Select(InventoryMapper.SerializeInventoryModel)
-                .OrderBy(inv => inv.ProductModel.Name)
+                .OrderBy(inv => inv.Product.Name)
                 .ToList();
 
             return Ok(inventory);
@@ -37,7 +37,8 @@ namespace SolarCoffee.Web.Controllers
                                    "- Adjustment: {Adjustment}",
                 shipment.ProductId, shipment.Adjustment);
 
-            var response = _inventoryService.UpdateUnitsAvailable(shipment.ProductId, shipment.Adjustment);
+            var response = _inventoryService
+                .UpdateUnitsAvailable(shipment.ProductId, shipment.Adjustment);
             
             return Ok(response);
         }

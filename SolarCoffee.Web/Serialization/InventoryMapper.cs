@@ -7,30 +7,28 @@ namespace SolarCoffee.Web.Serialization
     {
         public static ProductInventoryModel SerializeInventoryModel(ProductInventory inventory)
         {
-            var inventoryModel = new ProductInventoryModel
+            return new ProductInventoryModel
             {
                 Id = inventory.Id,
                 QuantityOnHand = inventory.QuantityOnHand,
                 IdealQuantity = inventory.IdealQuantity,
                 CreatedOn = inventory.CreatedOn,
                 UpdatedOn = inventory.UpdatedOn,
-                ProductModel = ProductMapper.SerializeProductModel(inventory.Product)
+                Product = ProductMapper.SerializeProductModel(inventory.Product)
             };
-            return inventoryModel;
         }
         
-        public static ProductInventory SerializeInventoryModel(ProductInventoryModel inventoryModel)
+        public static ProductInventory SerializeInventoryModel(ProductInventoryModel inventory)
         {
-            var inventory = new ProductInventory
+            return new ProductInventory
             {
-                Id = inventoryModel.Id,
-                QuantityOnHand = inventoryModel.QuantityOnHand,
-                IdealQuantity = inventoryModel.IdealQuantity,
-                CreatedOn = inventoryModel.CreatedOn,
-                UpdatedOn = inventoryModel.UpdatedOn,
-                Product = ProductMapper.SerializeProductModel(inventoryModel.ProductModel)
+                Id = inventory.Id,
+                QuantityOnHand = inventory.QuantityOnHand,
+                IdealQuantity = inventory.IdealQuantity,
+                CreatedOn = inventory.CreatedOn,
+                UpdatedOn = inventory.UpdatedOn,
+                Product = ProductMapper.SerializeProductModel(inventory.Product)
             };
-            return inventory;
         }
     }
 }

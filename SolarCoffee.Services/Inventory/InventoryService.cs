@@ -49,6 +49,7 @@ namespace SolarCoffee.Services.Inventory
                     .First(pi => pi.Product.Id == id);
 
                 inventory.QuantityOnHand += adjustment;
+                inventory.UpdatedOn = DateTime.UtcNow;
 
                 try
                 {
@@ -66,7 +67,7 @@ namespace SolarCoffee.Services.Inventory
                 {
                     Data = inventory,
                     IsSuccess = true,
-                    Message = $"Product {id} inventory updated",
+                    Message = $"Product '{inventory.Product.Name}' inventory updated",
                     Time = DateTime.UtcNow
                 };
             }
@@ -78,7 +79,7 @@ namespace SolarCoffee.Services.Inventory
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = $"Failed to update Product {id} inventory",
+                    Message = "Failed to update Product inventory",
                     Time = DateTime.UtcNow
                 };
             }

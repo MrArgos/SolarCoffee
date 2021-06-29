@@ -18,19 +18,29 @@
         <th>Quantity On Hand</th>
         <th>Unit Price</th>
         <th>Taxable</th>
-        <th>Delete</th>
+        <th>Archive</th>
       </tr>
 
       <tr v-for="item in inventory" :key="item.id">
         <td>{{ item.product.name }}</td>
-        <td>{{ item.quantityOnHand }}</td>
+        <td
+          v-bind:class="`${applyColor(
+            item.quantityOnHand,
+            item.idealQuantity
+          )}`"
+        >
+          {{ item.quantityOnHand }}
+        </td>
         <td>{{ item.product.price | price }}</td>
         <td>
           <span v-if="item.product.isTaxable">Yes</span>
           <span v-else>No</span>
         </td>
         <td>
-          <div>X</div>
+          <div
+            class="lni lni-cross-circle product-archive"
+            @click="archiveProduct(item.product.id)"
+          ></div>
         </td>
       </tr>
     </table>
@@ -55,6 +65,11 @@ import { IShipment } from "@/types/Shipment";
 import SolarButton from "@/components/SolarButton.vue";
 import NewProductModal from "@/components/Modals/NewProductModal.vue";
 import ShipmentModal from "@/components/Modals/ShipmentModal.vue";
+import { InventoryService } from "@/services/inventory-service";
+import { ProductService } from "@/services/product-service";
+
+const inventoryService = new InventoryService();
+const productService = new ProductService();
 
 @Component({
   name: "Inventory",
@@ -64,42 +79,26 @@ export default class Inventory extends Vue {
   isNewProductVisible = false;
   isShipmentVisible = false;
 
-  inventory: IProductInventory[] = [
-    {
-      id: 1,
-      product: {
-        id: 1,
-        name: "Some Product",
-        description: "Good stuff",
-        price: 100,
-        createdOn: new Date(),
-        updatedOn: new Date(),
-        isTaxable: true,
-        isArchived: false,
-      },
-      quantityOnHand: 150,
-      idealQuantity: 200,
-    },
-    {
-      id: 2,
-      product: {
-        id: 2,
-        name: "Another Product",
-        description: "Good stuff v2",
-        price: 110,
-        createdOn: new Date(),
-        updatedOn: new Date(),
-        isTaxable: false,
-        isArchived: false,
-      },
-      quantityOnHand: 130,
-      idealQuantity: 180,
-    },
-  ];
+  inventory: IProductInventory[] = [];
+
+  applyColor(current: number, target: number): string {
+    if (current <= 0) {
+      return "red";
+    }
+    if (Math.abs(target - current) > 8) {
+      return "yellow";
+    }
+    return "green";
+  }
 
   closeModals(): void {
     this.isShipmentVisible = false;
     this.isNewProductVisible = false;
+  }
+
+  async archiveProduct(id: number): Promise<void> {
+    await productService.archiveProduct(id);
+    await this.fetchData();
   }
 
   showNewProductModal(): void {
@@ -112,16 +111,56 @@ export default class Inventory extends Vue {
     this.isShipmentVisible = true;
   }
 
-  saveNewProduct(product: IProduct): void {
-    console.log("saveNewProduct");
-    console.log(product);
+  async saveNewProduct(product: IProduct): Promise<void> {
+    await productService.CreateProduct(product);
+    this.isNewProductVisible = false;
+    await this.fetchData();
   }
 
-  saveNewShipment(shipment: IShipment): void {
-    console.log("saveNewShipment");
-    console.log(shipment);
+  async saveNewShipment(shipment: IShipment): Promise<void> {
+    await inventoryService.updateInventoryQuantity(shipment);
+    this.isShipmentVisible = false;
+    await this.fetchData();
+  }
+
+  async fetchData(): Promise<void> {
+    this.inventory = await inventoryService.getInventory();
+    /*console.log('inventoryLog:', this.inventory);*/
+  }
+
+  async created(): Promise<void> {
+    await this.fetchData();
   }
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import "src/scss/global";
+
+.green {
+  font-weight: bold;
+  color: $solar-green;
+}
+
+.yellow {
+  font-weight: bold;
+  color: $solar-yellow;
+}
+
+.red {
+  font-weight: bold;
+  color: $solar-red;
+}
+
+.inventory-actions {
+  display: flex;
+  margin-bottom: 0.8rem;
+}
+
+.product-archive {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: $solar-red;
+}
+</style>
