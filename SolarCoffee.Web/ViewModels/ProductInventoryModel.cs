@@ -10,6 +10,6 @@ namespace SolarCoffee.Web.Controllers
         public DateTime UpdatedOn { get; set; }
         public int QuantityOnHand { get; set; }
         public int IdealQuantity { get; set; }
-        public ProductModel ProductModel { get; set; }
+        public ProductModel Product { get; set; }
     }
 }

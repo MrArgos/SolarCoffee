@@ -54,10 +54,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import SolarModal from "@/components/Modals/SolarModal.vue";
 import SolarButton from "@/components/SolarButton.vue";
-import { IProduct, IProductInventory } from "@/types/Product";
+import { IProduct } from "@/types/Product";
 
 @Component({
   name: "NewProductModal",
@@ -75,11 +75,11 @@ export default class NewProductModal extends Vue {
     isArchived: false,
   };
 
-  close() {
+  close(): void {
     this.$emit("close");
   }
 
-  save() {
+  save(): void {
     this.$emit("save:product", this.newProduct);
   }
 }

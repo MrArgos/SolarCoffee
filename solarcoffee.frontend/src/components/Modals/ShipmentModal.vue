@@ -49,7 +49,7 @@ import { IShipment } from "@/types/Shipment";
 })
 export default class ShipmentModal extends Vue {
   @Prop({ required: true, type: Array as () => IProductInventory[] })
-  inventory!: IProductInventory;
+  inventory!: IProductInventory[];
 
   selectedProduct: IProduct = {
     id: 0,
@@ -64,11 +64,11 @@ export default class ShipmentModal extends Vue {
 
   qtyReceived = 0;
 
-  close() {
+  close(): void {
     this.$emit("close");
   }
 
-  save() {
+  save(): void {
     let shipment: IShipment = {
       productId: this.selectedProduct.id,
       adjustment: this.qtyReceived,
