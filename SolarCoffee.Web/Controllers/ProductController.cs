@@ -38,8 +38,13 @@ namespace SolarCoffee.Web.Controllers
         }
 
         [HttpPost("/api/product/")]
-        public ActionResult CreateProduct([FromBody] ProductModel product)
+        public ActionResult AddProduct([FromBody] ProductModel product)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             _logger.LogInformation("Creating new product with name '{Name}'", product.Name);
             var productData = ProductMapper.SerializeProductModel(product);
             var response = _productService.CreateProduct(productData);

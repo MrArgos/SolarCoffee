@@ -1,6 +1,7 @@
 import Inventory from "@/views/Inventory.vue";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
+import Customers from "@/views/Customers.vue";
 
 Vue.use(VueRouter);
 
@@ -14,6 +15,11 @@ const routes: Array<RouteConfig> = [
     path: "/inventory",
     name: "inventory",
     component: Inventory,
+  },
+  {
+    path: "/customers",
+    name: "customers",
+    component: Customers,
   },
 ];
 

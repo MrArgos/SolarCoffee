@@ -112,7 +112,7 @@ export default class Inventory extends Vue {
   }
 
   async saveNewProduct(product: IProduct): Promise<void> {
-    await productService.CreateProduct(product);
+    await productService.saveProduct(product);
     this.isNewProductVisible = false;
     await this.fetchData();
   }

@@ -15,9 +15,11 @@ export class InventoryService {
       .then((response) => response.data);
   }
 
-  public async updateInventoryQuantity(shipment: IShipment): Promise<IProductInventory> {
+  public async updateInventoryQuantity(
+    shipment: IShipment
+  ): Promise<IProductInventory> {
     return axios
-      .patch(`${this.API_URL}/inventory/`,shipment)
+      .patch(`${this.API_URL}/inventory/`, shipment)
       .then((response) => response.data);
   }
 }

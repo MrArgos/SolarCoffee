@@ -10,7 +10,7 @@ export class ProductService {
       .then((response) => response.status);
   }
 
-  async CreateProduct(product: IProduct): Promise<number | boolean> {
+  async saveProduct(product: IProduct): Promise<number | boolean> {
     return axios
       .post(`${this.API_URL}/product/`, product)
       .then((response) => response.status);
