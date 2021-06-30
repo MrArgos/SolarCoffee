@@ -3,8 +3,6 @@
     <template v-slot:header> Add New Customer </template>
 
     <template v-slot:body>
-      <h3>Customer Information</h3>
-      <hr />
       <ul class="newCustomer">
         <li>
           <label for="firstName">First Name</label>
@@ -15,10 +13,6 @@
           <label for="lastName">Last Name</label>
           <input type="text" id="lastName" v-model="newCustomer.lastName" />
         </li>
-
-        <h3>Address</h3>
-        <hr />
-
         <li>
           <label for="addressLine1">Address Line 1</label>
           <input
@@ -38,12 +32,8 @@
         </li>
 
         <li>
-          <label for="country">Country</label>
-          <input
-            type="text"
-            id="country"
-            v-model="newCustomerAddress.country"
-          />
+          <label for="city">City</label>
+          <input type="text" id="city" v-model="newCustomerAddress.city" />
         </li>
 
         <li>
@@ -52,16 +42,20 @@
         </li>
 
         <li>
-          <label for="city">City</label>
-          <input type="text" id="city" v-model="newCustomerAddress.city" />
-        </li>
-
-        <li>
           <label for="postalCode">Postal Code</label>
           <input
             type="text"
             id="postalCode"
             v-model="newCustomerAddress.postalCode"
+          />
+        </li>
+
+        <li>
+          <label for="country">Country</label>
+          <input
+            type="text"
+            id="country"
+            v-model="newCustomerAddress.country"
           />
         </li>
       </ul>
@@ -123,7 +117,6 @@ export default class NewCustomerModal extends Vue {
   }
 
   save(): void {
-    console.log("Customer on Modal:", this.newCustomer);
     this.$emit("save:customer", this.newCustomer);
   }
 }
@@ -132,8 +125,26 @@ export default class NewCustomerModal extends Vue {
 <style scoped lang="scss">
 @import "src/scss/global.scss";
 .newCustomer {
+  display: flex;
+  flex-wrap: wrap;
   list-style: none;
   padding: 0;
   margin: 0;
+
+  input {
+    width: 80%;
+    height: 1.8rem;
+    margin: 0.8rem 2rem 0.8rem 0.8rem;
+    font-size: 1.1rem;
+    line-height: 1.3rem;
+    padding: 0.2rem;
+    color: #555;
+  }
+
+  label {
+    font-weight: bold;
+    margin: 0.8rem;
+    display: block;
+  }
 }
 </style>

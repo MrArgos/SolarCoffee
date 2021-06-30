@@ -121,7 +121,7 @@ namespace SolarCoffee.Services.Order
         }
 
         /// <summary>
-        /// Fullfills a SalesOrder
+        /// Fulfils a SalesOrder
         /// </summary>
         /// <param name="id">Primary Key of SalesOrder to fulfill</param>
         /// <returns>ServiceResponse bool</returns>

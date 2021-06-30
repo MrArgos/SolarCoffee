@@ -71,7 +71,7 @@ export default class SolarModal extends Vue {
   font-size: 1.2rem;
   font-weight: bold;
   border-bottom: 1px solid #eee;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .modal-footer {

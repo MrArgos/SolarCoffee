@@ -29,6 +29,7 @@ namespace SolarCoffee.Services.Inventory
             return _db.ProductInventories
                 .Include(pi => pi.Product)
                 .Where(pi => !pi.Product.IsArchived)
+                .OrderBy(pi => pi.Product.Name)
                 .ToList();
         }
 

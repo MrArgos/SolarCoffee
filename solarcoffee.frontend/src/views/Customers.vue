@@ -1,30 +1,33 @@
 <template>
   <div class="customers-container">
-    <h1 id="customersTitle">Customers Dashboard</h1>
+    <h1 id="customersTitle">Manage Customers</h1>
     <hr />
 
     <div class="customers-actions">
-      <solar-button @click.native="showNewCustomerModal" id="addNewBtn">
+      <solar-button @button:click="showNewCustomerModal" id="addNewBtn">
         Add New Customer
       </solar-button>
     </div>
 
     <table id="customersTable" class="table">
       <tr>
-        <th>Name</th>
-        <th>Country</th>
-        <th>State</th>
+        <th>Customer</th>
+        <th>Address</th>
         <th>City</th>
-        <th>Postal Code</th>
+        <th>Country</th>
+        <th>Since</th>
         <th>Delete</th>
       </tr>
 
       <tr v-for="customer in customers" :key="customer.id">
         <td>{{ customer.firstName + " " + customer.lastName }}</td>
-        <td>{{ customer.primaryAddress.country }}</td>
-        <td>{{ customer.primaryAddress.state }}</td>
+        <td>
+          {{ customer.primaryAddress.addressLine1 }},
+          {{ customer.primaryAddress.addressLine2 }}
+        </td>
         <td>{{ customer.primaryAddress.city }}</td>
-        <td>{{ customer.primaryAddress.postalCode }}</td>
+        <td>{{ customer.primaryAddress.country }}</td>
+        <td>{{ customer.createdOn | humanizeDate }}</td>
         <td>
           <div
             class="lni lni-cross-circle customer-delete"
@@ -77,7 +80,6 @@ export default class Customers extends Vue {
   }
 
   async saveNewCustomer(customer: ICustomer): Promise<void> {
-    console.log("Customer on View: ",customer);
     await customerService.saveCustomer(customer);
     this.isNewCustomerVisible = false;
     await this.fetchData();

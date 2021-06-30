@@ -80,7 +80,6 @@ export default class NewProductModal extends Vue {
   }
 
   save(): void {
-    console.log("Product to save:", this.newProduct);
     this.$emit("save:product", this.newProduct);
   }
 }
