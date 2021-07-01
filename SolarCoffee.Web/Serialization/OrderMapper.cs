@@ -43,6 +43,8 @@ namespace SolarCoffee.Web.Serialization
             return orders.Select(order => new OrderModel
             {
                 Id = order.Id,
+                CreatedOn = order.CreatedOn,
+                UpdatedOn = order.UpdatedOn,
                 SalesOrderItems = SerializeSalesOrderItems(order.SalesOrderItems),
                 Customer = CustomerMapper.SerializeCustomer(order.Customer),
                 IsPaid = order.IsPaid

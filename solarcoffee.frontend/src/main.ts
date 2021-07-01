@@ -14,7 +14,7 @@ Vue.filter("price", function (num: number) {
 });
 
 Vue.filter("humanizeDate", function (date: Date) {
-  return moment(date).format("Do MMMM YYYY");
+  return moment(date).format("MMMM Do YYYY");
 });
 
 new Vue({

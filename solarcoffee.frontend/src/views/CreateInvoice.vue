@@ -132,10 +132,17 @@
             <h3 v-if="this.selectedCustomer.primaryAddress.addressLine2">
               {{ this.selectedCustomer.primaryAddress.addressLine2 }}
             </h3>
-            <h3>{{ this.selectedCustomer.primaryAddress.city }}</h3>
-            <h3>{{ this.selectedCustomer.primaryAddress.state }}</h3>
-            <h3>{{ this.selectedCustomer.primaryAddress.postalCode }}</h3>
-            <h3>{{ this.selectedCustomer.primaryAddress.country }}</h3>
+            <h3>
+              {{
+                this.selectedCustomer.primaryAddress.city +
+                " | " +
+                this.selectedCustomer.primaryAddress.state +
+                " | " +
+                this.selectedCustomer.primaryAddress.postalCode +
+                " | " +
+                this.selectedCustomer.primaryAddress.country
+              }}
+            </h3>
           </div>
           <table class="table">
             <thead>
@@ -213,6 +220,10 @@ const invoiceService = new InvoiceService();
   components: { SolarButton },
 })
 export default class CreateInvoice extends Vue {
+  $refs!: {
+    invoice: HTMLElement;
+  };
+
   invoiceStep = 1;
   invoice: IInvoice = {
     createdOn: new Date(),
@@ -238,7 +249,9 @@ export default class CreateInvoice extends Vue {
       let lineItem = this.lineItems.find(
         (item) => item.product.id === newItem.product.id
       );
-      lineItem.quantity = Number(lineItem.quantity) + newItem.quantity;
+      if (lineItem !== undefined) {
+        lineItem.quantity = Number(lineItem.quantity) + newItem.quantity;
+      }
     } else {
       this.lineItems.push(this.newItem);
     }
@@ -264,15 +277,21 @@ export default class CreateInvoice extends Vue {
     await this.$router.push("/orders");
   }
 
-  downloadPdf() {
+  downloadPdf(): void {
     let pdf = new jsPDF("p", "pt", "a4", true);
     let invoice = document.getElementById("invoice");
+
+    if (invoice === null) {
+      console.log(":: invoice is null :: in downloadPFD()");
+      return;
+    }
+
     let width = this.$refs.invoice.clientWidth;
     let height = this.$refs.invoice.clientHeight;
 
     html2canvas(invoice).then((canvas) => {
       let image = canvas.toDataURL("image/png");
-      pdf.addImage(image, "PNG", 0, 0, width * 0.55, height * 0.55);
+      pdf.addImage(image, "PNG", 0, 0, width * 0.4, height * 0.4);
       pdf.save("invoice");
     });
   }
@@ -405,7 +424,7 @@ export default class CreateInvoice extends Vue {
   text-align: center;
 
   img {
-    width: 280px;
+    width: 120px;
   }
 }
 
