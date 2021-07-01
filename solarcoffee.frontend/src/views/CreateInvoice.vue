@@ -197,10 +197,12 @@ import { Component, Vue } from "vue-property-decorator";
 import SolarButton from "@/components/SolarButton.vue";
 import { IInvoice, ILineItem } from "@/types/Invoice";
 import { ICustomer } from "@/types/Customer";
-import { IProductInventory, IProduct } from "@/types/Product";
+import { IProductInventory } from "@/types/Product";
 import { CustomerService } from "@/services/customer-service";
 import { InventoryService } from "@/services/inventory-service";
 import InvoiceService from "@/services/invoice-service";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 const customerService = new CustomerService();
 const inventoryService = new InventoryService();
@@ -222,7 +224,6 @@ export default class CreateInvoice extends Vue {
   selectedCustomerId = 0;
   inventory: IProductInventory[] = [];
   lineItems: ILineItem[] = [];
-  discardProduct!: IProduct;
   newItem = {} as ILineItem;
 
   addLineItem(): void {
@@ -258,6 +259,22 @@ export default class CreateInvoice extends Vue {
     };
 
     await invoiceService.makeNewInvoice(this.invoice);
+
+    this.downloadPdf();
+    await this.$router.push("/orders");
+  }
+
+  downloadPdf() {
+    let pdf = new jsPDF("p", "pt", "a4", true);
+    let invoice = document.getElementById("invoice");
+    let width = this.$refs.invoice.clientWidth;
+    let height = this.$refs.invoice.clientHeight;
+
+    html2canvas(invoice).then((canvas) => {
+      let image = canvas.toDataURL("image/png");
+      pdf.addImage(image, "PNG", 0, 0, width * 0.55, height * 0.55);
+      pdf.save("invoice");
+    });
   }
 
   get runningTotal(): number {
@@ -280,7 +297,7 @@ export default class CreateInvoice extends Vue {
   }
 
   get selectedCustomer(): ICustomer | undefined {
-    return this.customers.find((c) => c.id == this.selectedCustomerId!);
+    return this.customers.find((c) => c.id === this.selectedCustomerId);
   }
 
   startOver(): void {

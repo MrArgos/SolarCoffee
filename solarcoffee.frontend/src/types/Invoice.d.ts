@@ -1,5 +1,4 @@
 import { IProduct } from "@/types/Product";
-import { ICustomer } from "@/types/Customer";
 
 interface ILineItem {
   product: IProduct;
