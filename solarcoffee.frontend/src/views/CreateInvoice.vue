@@ -35,7 +35,7 @@
           </option>
         </select>
         <label for="quantity">Quantity:</label>
-        <input v-model="newItem.quantity" id="quantity" min="0" />
+        <input v-model="newItem.quantity" type="number" id="quantity" min="0" />
       </div>
 
       <div class="invoice-item-actions">
@@ -61,9 +61,10 @@
             <tr>
               <th>Product</th>
               <th>Description</th>
-              <th>Qty.</th>
+              <th>Quantity</th>
               <th>Price</th>
               <th>Subtotal</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <tr
@@ -72,22 +73,114 @@
           >
             <td>{{ lineItem.product.name }}</td>
             <td>{{ lineItem.product.description }}</td>
-            <td>{{ lineItem.quantity }}</td>
+            <td class="item-quantity">
+              <span
+                v-if="lineItem.quantity > 1"
+                class="lni lni-circle-minus item-quantity-icons"
+                @click="lineItem.quantity = Number(lineItem.quantity) - 1"
+              ></span>
+              {{ lineItem.quantity }}
+              <span
+                class="lni lni-circle-plus item-quantity-icons"
+                @click="lineItem.quantity = Number(lineItem.quantity) + 1"
+              ></span>
+            </td>
             <td>{{ lineItem.product.price }}</td>
             <td>{{ (lineItem.product.price * lineItem.quantity) | price }}</td>
+            <td>
+              <div
+                class="lni lni-cross-circle item-delete"
+                @click="removeLineItem(lineItem.product.id)"
+              ></div>
+            </td>
           </tr>
         </table>
       </div>
     </div>
 
-    <div class="invoice-step" v-if="invoiceStep === 3"></div>
+    <div class="invoice-step" v-if="invoiceStep === 3">
+      <h2>Step 3: Review and Submit</h2>
+      <solar-button @button:click="submitInvoice">
+        Submit Invoice
+      </solar-button>
+      <hr />
+      <div class="invoice-step-detail" id="invoice" ref="invoice">
+        <div class="invoice-logo">
+          <img
+            id="imgLogo"
+            alt="Solar Coffee logo"
+            src="../assets/images/solarcoffee-logo.png"
+          />
+          <h3>1337 Solar Lane</h3>
+          <h3>San Somewhere, CA 90000</h3>
+          <h3>USA</h3>
+        </div>
+        <div class="invoice-order-list" v-if="lineItems.length">
+          <div class="invoice-header">
+            <h3>Invoice: {{ new Date() | humanizeDate }}</h3>
+            <h3>
+              Customer:
+              {{
+                this.selectedCustomer.firstName +
+                " " +
+                this.selectedCustomer.lastName
+              }}
+            </h3>
+            <h3>
+              Address: {{ this.selectedCustomer.primaryAddress.addressLine1 }}
+            </h3>
+            <h3 v-if="this.selectedCustomer.primaryAddress.addressLine2">
+              {{ this.selectedCustomer.primaryAddress.addressLine2 }}
+            </h3>
+            <h3>{{ this.selectedCustomer.primaryAddress.city }}</h3>
+            <h3>{{ this.selectedCustomer.primaryAddress.state }}</h3>
+            <h3>{{ this.selectedCustomer.primaryAddress.postalCode }}</h3>
+            <h3>{{ this.selectedCustomer.primaryAddress.country }}</h3>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Description</th>
+                <th>Qty.</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tr
+              v-for="lineItem in lineItems"
+              :key="`index_${lineItem.product.id}`"
+            >
+              <td>{{ lineItem.product.name }}</td>
+              <td>{{ lineItem.product.description }}</td>
+              <td>{{ lineItem.quantity }}</td>
+              <td>{{ lineItem.product.price }}</td>
+              <td>
+                {{ (lineItem.product.price * lineItem.quantity) | price }}
+              </td>
+            </tr>
+            <tr>
+              <th colspan="4"></th>
+              <th>Grand Total</th>
+            </tr>
+            <tfoot>
+              <tr>
+                <td colspan="4" class="due">Balance due upon receipt:</td>
+                <td class="price-final">{{ runningTotal | price }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <hr />
     <div class="invoice-step-actions">
       <solar-button @button:click="prev" :disabled="!canGoPrev"
         >Previous</solar-button
       >
       <solar-button
-        v-if="invoiceStep !== 2"
+        v-if="invoiceStep === 1"
         @button:click="next"
         :disabled="!canGoNext"
         >Next</solar-button
@@ -104,7 +197,7 @@ import { Component, Vue } from "vue-property-decorator";
 import SolarButton from "@/components/SolarButton.vue";
 import { IInvoice, ILineItem } from "@/types/Invoice";
 import { ICustomer } from "@/types/Customer";
-import { IProductInventory } from "@/types/Product";
+import { IProductInventory, IProduct } from "@/types/Product";
 import { CustomerService } from "@/services/customer-service";
 import { InventoryService } from "@/services/inventory-service";
 import InvoiceService from "@/services/invoice-service";
@@ -129,12 +222,13 @@ export default class CreateInvoice extends Vue {
   selectedCustomerId = 0;
   inventory: IProductInventory[] = [];
   lineItems: ILineItem[] = [];
-  newItem: ILineItem = { product: undefined, quantity: 0 };
+  discardProduct!: IProduct;
+  newItem = {} as ILineItem;
 
   addLineItem(): void {
     let newItem: ILineItem = {
       product: this.newItem.product,
-      quantity: parseInt(this.newItem.quantity),
+      quantity: Number(this.newItem.quantity),
     };
 
     let existingItems = this.lineItems.map((item) => item.product.id);
@@ -143,16 +237,27 @@ export default class CreateInvoice extends Vue {
       let lineItem = this.lineItems.find(
         (item) => item.product.id === newItem.product.id
       );
-      lineItem.quantity = parseInt(lineItem.quantity) + newItem.quantity;
+      lineItem.quantity = Number(lineItem.quantity) + newItem.quantity;
     } else {
       this.lineItems.push(this.newItem);
     }
 
-    this.newItem = { product: undefined, quantity: 0 };
+    this.newItem = {} as ILineItem;
   }
 
   finalizeOrder(): void {
     this.invoiceStep = 3;
+  }
+
+  async submitInvoice(): Promise<void> {
+    this.invoice = {
+      customerId: this.selectedCustomerId,
+      lineItems: this.lineItems,
+      createdOn: new Date(),
+      updatedOn: new Date(),
+    };
+
+    await invoiceService.makeNewInvoice(this.invoice);
   }
 
   get runningTotal(): number {
@@ -174,11 +279,24 @@ export default class CreateInvoice extends Vue {
     return this.invoiceStep !== 1;
   }
 
+  get selectedCustomer(): ICustomer | undefined {
+    return this.customers.find((c) => c.id == this.selectedCustomerId!);
+  }
+
   startOver(): void {
     this.selectedCustomerId = 0;
     this.lineItems = [];
-    this.invoice = { customerId: 0, lineItems: [] };
+    this.invoice = {
+      createdOn: new Date(),
+      updatedOn: new Date(),
+      customerId: 0,
+      lineItems: [],
+    };
     this.invoiceStep = 1;
+  }
+
+  removeLineItem(prodId: number): void {
+    this.lineItems = this.lineItems.filter((el) => el.product.id !== prodId);
   }
 
   prev(): void {
@@ -262,6 +380,7 @@ export default class CreateInvoice extends Vue {
 .invoice-header {
   width: 100%;
   margin-bottom: 1.2rem;
+  text-align: center;
 }
 
 .invoice-logo {
@@ -271,5 +390,25 @@ export default class CreateInvoice extends Vue {
   img {
     width: 280px;
   }
+}
+
+.item-delete {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: $solar-red;
+}
+
+.item-quantity {
+  text-align: center;
+  wrap-option: 0;
+}
+
+.item-quantity-icons {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 2px;
+  color: $solar-blue;
 }
 </style>
