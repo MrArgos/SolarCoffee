@@ -19,11 +19,12 @@
           <td>{{ order.id }}</td>
           <td>{{ order.createdOn | humanizeDate }}</td>
           <td>{{ getTotal(order) | price }}</td>
-          <td>{{ getStatus(order) }}</td>
+          <td class="status-text"
+            v-bind:class="{ paid: order.isPaid }">{{ getStatus(order) }}</td>
           <td>
             <div
-              class="lni lni-coin pay-order"
               v-if="!order.isPaid"
+              class="lni lni-coin pay-order"
               @click="completeOrder(order.id)"
             ></div>
           </td>
@@ -77,10 +78,29 @@ export default class Orders extends Vue {
 <style scoped lang="scss">
 @import "src/scss/global.scss";
 
+/*.green {
+  font-weight: bold;
+  color: $solar-green;
+}*/
+
 .pay-order {
   cursor: pointer;
   font-weight: bold;
   font-size: 1.5rem;
+  color: $solar-green;
+}
+
+.inventory-actions {
+  display: flex;
+  margin-bottom: 0.8rem;
+}
+
+.status-text{
+  font-weight: bold;
+  color: $solar-red;
+}
+
+.paid {
   color: $solar-green;
 }
 </style>
