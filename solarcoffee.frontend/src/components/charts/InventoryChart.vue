@@ -15,16 +15,18 @@
 import { Vue, Component } from "vue-property-decorator";
 import VueApexCharts from "vue-apexcharts";
 import { IInventoryTimeline } from "@/types/InventoryGraph";
+import { Get, Sync } from "vuex-pathify";
 
 @Component({
   name: "InventoryChart",
   components: {},
 })
-
-
-export default class InventoryCharts extends Vue {
-
+export default class InventoryChart extends Vue {
+  @Sync("snapshotTimeline")
   snapshotTimeline: IInventoryTimeline;
+
+  @Get("isTimelineBuilt")
+  timelineBuilt?: boolean;
 
   get options() {
     return {
@@ -36,6 +38,17 @@ export default class InventoryCharts extends Vue {
         type: "datetime",
       },
     };
+  }
+
+  get series() {
+    return this.snapshotTimeline.productInventorySnapshots.map((snapshot) => ({
+      name: snapshot.productId,
+      data: snapshot.quantityOnHand,
+    }));
+  }
+
+  async created(): void {
+    await this.$store.dispatch("assignSnapshots");
   }
 }
 </script>
