@@ -110,9 +110,10 @@ namespace SolarCoffee.Services.Inventory
 
             var snapshot = new ProductInventorySnapshot
             {
+                SnapshotTime = now,
                 Product = inventory.Product,
-                QuantityOnHand = inventory.QuantityOnHand,
-                SnapshotTime = now
+                QuantityOnHand = inventory.QuantityOnHand
+                
             };
             _db.Add(snapshot);
 
@@ -127,7 +128,7 @@ namespace SolarCoffee.Services.Inventory
         /// <returns>List of ProductInventorySnapshot</returns>
         public List<ProductInventorySnapshot> GetSnapshotHistory()
         {
-            var earliest = DateTime.UtcNow.AddHours(-6);
+            var earliest = DateTime.UtcNow - TimeSpan.FromHours(6);
 
             return _db.ProductInventorySnapshots
                 .Include(snap => snap.Product)
