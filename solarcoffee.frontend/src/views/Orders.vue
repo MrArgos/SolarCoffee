@@ -19,8 +19,9 @@
           <td>{{ order.id }}</td>
           <td>{{ order.createdOn | humanizeDate }}</td>
           <td>{{ getTotal(order) | price }}</td>
-          <td class="status-text"
-            v-bind:class="{ paid: order.isPaid }">{{ getStatus(order) }}</td>
+          <td class="status-text" v-bind:class="{ paid: order.isPaid }">
+            {{ getStatus(order) }}
+          </td>
           <td>
             <div
               v-if="!order.isPaid"
@@ -95,7 +96,7 @@ export default class Orders extends Vue {
   margin-bottom: 0.8rem;
 }
 
-.status-text{
+.status-text {
   font-weight: bold;
   color: $solar-red;
 }
