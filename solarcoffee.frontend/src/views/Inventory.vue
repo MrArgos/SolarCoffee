@@ -16,6 +16,7 @@
 
     <table id="inventoryTable" class="table">
       <tr>
+        <th>ID</th>
         <th>Item</th>
         <th>Quantity On Hand</th>
         <th>Unit Price</th>
@@ -24,6 +25,7 @@
       </tr>
 
       <tr v-for="item in inventory" :key="item.id">
+        <td>{{ item.product.id }}</td>
         <td>{{ item.product.name }}</td>
         <td
           v-bind:class="`${applyColor(

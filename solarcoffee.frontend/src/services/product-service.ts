@@ -15,4 +15,10 @@ export class ProductService {
       .post(`${this.API_URL}/product/`, product)
       .then((response) => response.status);
   }
+
+  async getProductById(productId: number): Promise<IProduct> {
+    return axios
+      .get(`${this.API_URL}/product/${productId}`)
+      .then((response) => response.data);
+  }
 }

@@ -54,7 +54,7 @@ namespace SolarCoffee.Services.Inventory
 
                 try
                 {
-                    CreateSnapshot(inventory);
+                    CreateSnapshot();
                 }
                 catch (Exception e)
                 {
@@ -104,19 +104,25 @@ namespace SolarCoffee.Services.Inventory
         /// Creates Snapshot of inventory at current time
         /// </summary>
         /// <param name="inventory">Inventory to snapshot</param>
-        public void CreateSnapshot(ProductInventory inventory)
+        public void CreateSnapshot()
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
 
-            var snapshot = new ProductInventorySnapshot
+            var inventories = _db.ProductInventories
+                .Include(inv => inv.Product)
+                .ToList();
+
+            foreach (var inventory in inventories)
             {
-                SnapshotTime = now,
-                Product = inventory.Product,
-                QuantityOnHand = inventory.QuantityOnHand
-                
-            };
-            _db.Add(snapshot);
-
+                var snapshot = new ProductInventorySnapshot
+                    {
+                        SnapshotTime = now,
+                        Product = inventory.Product,
+                        QuantityOnHand = inventory.QuantityOnHand
+                    };
+                _db.Add(snapshot);
+            }
+            
             /* _db.SaveChanges();  //No need to save changes, because SaveChanges is
                                   // called right after CreateSnapshot in UpdateUnitsAvailable
             */
@@ -128,13 +134,15 @@ namespace SolarCoffee.Services.Inventory
         /// <returns>List of ProductInventorySnapshot</returns>
         public List<ProductInventorySnapshot> GetSnapshotHistory()
         {
-            var earliest = DateTime.UtcNow - TimeSpan.FromHours(6);
+            var earliest = DateTime.Now - TimeSpan.FromHours(6);
 
-            return _db.ProductInventorySnapshots
+            var res = _db.ProductInventorySnapshots
                 .Include(snap => snap.Product)
                 .Where(snap => snap.SnapshotTime > earliest
                                && !snap.Product.IsArchived)
                 .ToList();
+
+            return res;
         }
     }
 }
